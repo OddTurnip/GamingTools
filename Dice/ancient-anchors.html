@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ancient Anchors Dice Roller</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="icon" href="../favicon.ico" type="image/x-icon">
+    <!-- Apply theme immediately to prevent flash of unstyled content -->
+    <script src="../Themes/theme-init.js"></script>
+    <style>
+        /* Dice pool stepper: +/- buttons flanking the dropdown for easy mobile use */
+        .dice-stepper {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .stepper-btn {
+            width: 44px;
+            height: 44px;
+            font-size: 1.5em;
+            font-weight: bold;
+            line-height: 1;
+            color: var(--text-primary);
+            background: var(--bg-white);
+            border: 2px solid var(--border-medium);
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.15s ease;
+            -webkit-user-select: none;
+            user-select: none;
+            touch-action: manipulation;
+        }
+
+        .stepper-btn:hover:not(:disabled) {
+            border-color: var(--accent-secondary);
+            background: var(--bg-hover);
+        }
+
+        .stepper-btn:active:not(:disabled) {
+            transform: scale(0.95);
+        }
+
+        .stepper-btn:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+        }
+
+        /* Highlight the die that decided the result */
+        .die.selected {
+            box-shadow: 0 0 10px 3px rgba(255, 215, 0, 0.8);
+        }
+
+        /* Footer: no background box on this page, just the link */
+        .footer {
+            padding: 0;
+            background: none;
+            border-top: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="header-row">
+                <!-- Left: Navigation -->
+                <div class="header-nav">
+                    <a href="index.html" class="nav-button">← Back</a>
+                </div>
+
+                <!-- Center: Title -->
+                <div class="header-title">
+                    <h1>Ancient Anchors</h1>
+                </div>
+
+                <!-- Right: Theme selector -->
+                <div class="header-theme" id="theme-slot"></div>
+            </div>
+        </div>
+
+        <div class="controls">
+            <div class="control-group-inline" style="margin: 0 auto;">
+                <label for="numDice" style="font-size: 1.4em;">Number of Dice:</label>
+                <div class="dice-stepper">
+                    <button type="button" id="decreaseDice" class="stepper-btn" aria-label="Remove a die">−</button>
+                    <select id="numDice" style="width:60px;">
+                        <option value="1">1</option>
+                        <option value="2" selected>2</option>
+                        <option value="3">3</option>
+                        <option value="4">4</option>
+                        <option value="5">5</option>
+                        <option value="6">6</option>
+                    </select>
+                    <button type="button" id="increaseDice" class="stepper-btn" aria-label="Add a die">+</button>
+                </div>
+            </div>
+
+            <button id="rollButton" class="roll-button">Roll</button>
+        </div>
+
+        <div class="result-display">
+            <div id="currentResult" class="current-result">--</div>
+            <div id="outcomeText" class="outcome-text"></div>
+            <div id="diceDisplay" class="dice-display"></div>
+        </div>
+
+        <div class="statistics-section">
+            <h2 id="statsToggle" class="stats-toggle">
+                <span class="info-icon">ⓘ</span> Statistics
+            </h2>
+            <div id="statsContent" class="stats-content" style="display: none;">
+                <table class="stats-table">
+                    <thead>
+                        <tr>
+                            <th>Pool</th>
+                            <th>Crisis</th>
+                            <th>Costly</th>
+                            <th>Success</th>
+                            <th>Critical</th>
+                        </tr>
+                    </thead>
+                    <tbody id="statsBody"></tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="history-section">
+            <h2>Roll History</h2>
+            <div id="rollHistory" class="roll-history"></div>
+        </div>
+
+        <!-- Footer -->
+        <div class="footer">
+            <a href="https://www.oddturnip.com" target="_blank" rel="noopener noreferrer" class="oddturnip-link">
+                <img src="../Names/odd_turnip.png" alt="OddTurnip Logo">
+                <span>OddTurnip.com</span>
+            </a>
+        </div>
+    </div>
+
+    <script type="module">
+        // Import Ancient Anchors dice logic and history utilities
+        import {
+            rollAncientAnchorsDice,
+            formatAncientAnchorsRoll,
+            getAncientAnchorsProbabilities,
+            getOutcomeColor,
+            clampDiceCount,
+            MIN_DICE,
+            MAX_DICE,
+            DEFAULT_DICE
+        } from './ancient-anchors.js';
+        import { createHistoryEntry, addToHistory } from '../code/history-log.js';
+        import { initThemeSelector } from '../Themes/theme-setup.js';
+
+        // Initialize theme selector
+        initThemeSelector();
+
+        // Ancient Anchors Dice Roller
+        document.addEventListener('DOMContentLoaded', function() {
+            // Get references to DOM elements (UI layer)
+            const numDiceSelect = document.getElementById('numDice');
+            const decreaseButton = document.getElementById('decreaseDice');
+            const increaseButton = document.getElementById('increaseDice');
+            const rollButton = document.getElementById('rollButton');
+            const currentResultDiv = document.getElementById('currentResult');
+            const outcomeTextDiv = document.getElementById('outcomeText');
+            const diceDisplayDiv = document.getElementById('diceDisplay');
+            const rollHistoryDiv = document.getElementById('rollHistory');
+            const statsToggle = document.getElementById('statsToggle');
+            const statsContent = document.getElementById('statsContent');
+            const statsBody = document.getElementById('statsBody');
+
+            // Start on the default pool size
+            numDiceSelect.value = String(DEFAULT_DICE);
+            updateStepperButtons();
+            buildStatsTable();
+
+            // Roll button
+            rollButton.addEventListener('click', handleRoll);
+
+            // Stepper buttons
+            decreaseButton.addEventListener('click', () => changeDiceCount(-1));
+            increaseButton.addEventListener('click', () => changeDiceCount(1));
+            numDiceSelect.addEventListener('change', updateStepperButtons);
+
+            // Statistics toggle
+            statsToggle.addEventListener('click', function() {
+                statsContent.style.display = statsContent.style.display === 'none' ? 'block' : 'none';
+            });
+
+            // Also allow rolling with Enter key
+            document.addEventListener('keydown', function(event) {
+                if (event.key === 'Enter') {
+                    handleRoll();
+                }
+            });
+
+            /**
+             * Get the currently selected dice count
+             */
+            function getDiceCount() {
+                return clampDiceCount(parseInt(numDiceSelect.value, 10));
+            }
+
+            /**
+             * Adjust the dice pool by a delta and update the dropdown
+             */
+            function changeDiceCount(delta) {
+                numDiceSelect.value = String(clampDiceCount(getDiceCount() + delta));
+                updateStepperButtons();
+            }
+
+            /**
+             * Disable the stepper buttons at the ends of the range
+             */
+            function updateStepperButtons() {
+                const numDice = getDiceCount();
+                decreaseButton.disabled = numDice <= MIN_DICE;
+                increaseButton.disabled = numDice >= MAX_DICE;
+            }
+
+            /**
+             * Build the statistics table from the probability function
+             */
+            function buildStatsTable() {
+                statsBody.innerHTML = '';
+
+                for (let pool = MIN_DICE; pool <= MAX_DICE; pool++) {
+                    const probabilities = getAncientAnchorsProbabilities(pool);
+                    const row = document.createElement('tr');
+
+                    const cells = [
+                        String(pool),
+                        formatPercent(probabilities.crisis),
+                        formatPercent(probabilities.costly),
+                        formatPercent(probabilities.success),
+                        formatPercent(probabilities.critical)
+                    ];
+
+                    cells.forEach(text => {
+                        const cell = document.createElement('td');
+                        cell.textContent = text;
+                        row.appendChild(cell);
+                    });
+
+                    statsBody.appendChild(row);
+                }
+            }
+
+            /**
+             * Format a 0-1 probability as a whole percentage
+             */
+            function formatPercent(value) {
+                return `${Math.round(value * 100)}%`;
+            }
+
+            /**
+             * Handle roll button click
+             * UI orchestration: call logic, update display, log history
+             */
+            function handleRoll() {
+                const numDice = getDiceCount();
+                const rollResult = rollAncientAnchorsDice(numDice);
+
+                updateDisplay(rollResult);
+
+                const entry = createHistoryEntry(formatAncientAnchorsRoll(rollResult));
+                addToHistory(rollHistoryDiv, entry);
+            }
+
+            /**
+             * Update the display with the roll result
+             */
+            function updateDisplay(rollResult) {
+                const { rolls, result, outcome, isCritical } = rollResult;
+                const selectedIndex = rolls.indexOf(result);
+
+                currentResultDiv.textContent = result;
+                outcomeTextDiv.textContent = outcome;
+                outcomeTextDiv.style.color = getOutcomeColor(outcome);
+
+                diceDisplayDiv.innerHTML = '';
+                rolls.forEach((roll, idx) => {
+                    const die = document.createElement('div');
+                    die.className = 'die';
+                    die.textContent = roll;
+
+                    // Highlight the die (or dice, on a critical) that decided the result
+                    if (isCritical && roll === 6) {
+                        die.classList.add('selected');
+                    } else if (!isCritical && idx === selectedIndex) {
+                        die.classList.add('selected');
+                    }
+
+                    diceDisplayDiv.appendChild(die);
+                });
+            }
+        });
+    </script>
+</body>
+</html>
