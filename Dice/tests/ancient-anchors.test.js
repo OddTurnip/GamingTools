@@ -164,7 +164,7 @@ describe('getOutcome', () => {
 
 describe('getOutcomeColor', () => {
     it('returns the right color for each outcome', () => {
-        expect(getOutcomeColor('Critical Success')).toBe('#FFD700'); // Gold
+        expect(getOutcomeColor('Critical Success')).toBe('#B388FF'); // Purple
         expect(getOutcomeColor('Success')).toBe('#4CAF50'); // Green
         expect(getOutcomeColor('Costly')).toBe('#FFA500'); // Orange
         expect(getOutcomeColor('Crisis')).toBe('#F44336'); // Red

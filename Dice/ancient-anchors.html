@@ -52,6 +52,11 @@
             box-shadow: 0 0 10px 3px rgba(255, 215, 0, 0.8);
         }
 
+        /* On a critical, the winning 6s glow purple to match the outcome text */
+        .die.selected.critical {
+            box-shadow: 0 0 10px 3px rgba(179, 136, 255, 0.85);
+        }
+
         /* Footer: no background box on this page, just the link */
         .footer {
             padding: 0;
@@ -289,7 +294,7 @@
 
                     // Highlight the die (or dice, on a critical) that decided the result
                     if (isCritical && roll === 6) {
-                        die.classList.add('selected');
+                        die.classList.add('selected', 'critical');
                     } else if (!isCritical && idx === selectedIndex) {
                         die.classList.add('selected');
                     }

@@ -75,7 +75,7 @@ export function getOutcome(result, isCritical = false) {
 export function getOutcomeColor(outcome) {
     switch (outcome) {
         case 'Critical Success':
-            return '#FFD700'; // Gold
+            return '#B388FF'; // Purple
         case 'Success':
             return '#4CAF50'; // Green
         case 'Costly':
