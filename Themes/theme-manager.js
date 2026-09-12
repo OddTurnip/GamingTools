@@ -19,7 +19,8 @@ const THEMES = {
     BEACH: 'beach',
     CYBERPUNK: 'cyberpunk',
     HALLOWEEN: 'halloween',
-    CRAYON: 'crayon'
+    CRAYON: 'crayon',
+    ANCIENT_ANCHORS: 'ancient-anchors'
 };
 
 // Default theme
@@ -136,7 +137,8 @@ function createThemeSelector() {
                 { value: THEMES.BEACH, label: 'Beach' },
                 { value: THEMES.CYBERPUNK, label: 'Cyberpunk' },
                 { value: THEMES.HALLOWEEN, label: 'Halloween' },
-                { value: THEMES.CRAYON, label: 'Crayon' }
+                { value: THEMES.CRAYON, label: 'Crayon' },
+                { value: THEMES.ANCIENT_ANCHORS, label: 'Ancient Anchors' }
             ]
         },
         {

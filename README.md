@@ -8,21 +8,22 @@ A collection of web-based dice rolling applications for tabletop RPGs and gaming
 - **Basic Roller** - Standard polyhedral dice (d4, d6, d8, d10, d12, d20, d100)
 - **Fate/Fudge** - Fate dice with ladder system and probability tables
 - **Blades in the Dark** - Position, effect, and outcome mechanics
+- **Ancient Anchors** - d6 pools of 1-6 dice with Crisis / Costly / Success outcomes
 - **Tarot** - Full 78-card deck with three-card spreads
 - **Custom** - Advanced roller with exploding dice, success counting, advantage/disadvantage, and drop mechanics
 
-🎨 **11 Beautiful Themes:**
+🎨 **16 Beautiful Themes:**
 - Seasonal themes: Autumn, Winter, Spring, Summer
 - Stars theme with animated background
 - Light and Dark modes
-- Specialty themes: Gothic, Cthulhu, Beach, Cyberpunk
+- Specialty themes: Gothic, Cthulhu, Beach, Cyberpunk, Halloween, Crayon, Ancient Anchors
 - Seasonal animated effects (snowflakes, leaves, etc.)
 
 ✨ **Modern Architecture:**
 - ES6 modules with clean separation of concerns
 - Pure functions for testable dice mechanics
 - No build step required - runs natively in modern browsers
-- Comprehensive test suite (283 tests)
+- Comprehensive test suite (338 tests)
 
 ## Quick Start
 
