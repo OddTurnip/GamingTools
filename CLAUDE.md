@@ -21,13 +21,13 @@ Welcome! This guide helps AI assistants understand and work with the Gaming Tool
 ### Code Organization
 - **Core libraries** (DiceLibrary.js, CardLibrary.js, HistoryLog.js) contain pure functions with no DOM dependencies
   - DiceLibrary.js includes comprehensive functions: rollDiceWithModifiers(), rollWithAdvantage()
-- **Domain modules** (Fate.js, Blades.js, Tarot.js) implement specific game systems
+- **Domain modules** (Fate.js, Blades.js, ancient-anchors.js, Tarot.js) implement specific game systems
 - **HTML files** use inline `<script type="module">` to import and orchestrate
 - **Theme utilities** in `Themes/` folder handle theming without code duplication
-- **Comprehensive test suite** with 313 tests using Vitest
+- **Comprehensive test suite** with 338 tests using Vitest
 
 ### Theme System
-- **15 themes** available: Autumn (default), Light, Grey, Dark, Black, Winter, Spring, Summer, Stars, Gothic, Cthulhu, Beach, Cyberpunk, Halloween, Crayon
+- **16 themes** available: Autumn (default), Light, Grey, Dark, Black, Winter, Spring, Summer, Stars, Gothic, Cthulhu, Beach, Cyberpunk, Halloween, Crayon, Ancient Anchors
 - **Shared styles** in `Themes/themes.css` - contains all CSS variables and shared component styles
 - **Theme selector** via `Themes/theme-setup.js` - provides `autoInitThemeSelector()` and `initThemeSelector()`
 - **Theme init** via `Themes/theme-init.js` - prevents flash of unstyled content (FOUC)

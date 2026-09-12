@@ -38,6 +38,12 @@ Located in `code/`:
   - formatBladesRoll(), getBladesProbabilities(), getEffect(), interpretBladesRoll()
   - Uses dice-library.js for core mechanics
 
+- **ancient-anchors.js** - Ancient Anchors dice system
+  - rollAncientAnchorsDice(), evaluateDicePool(), getOutcome(), getOutcomeColor()
+  - clampDiceCount(), getDieClass(), formatAncientAnchorsRoll(), getAncientAnchorsProbabilities()
+  - Pools of 1-6 d6 (no zero-dice roll), outcomes are Crisis / Costly / Success / Critical Success
+  - Uses dice-library.js for core mechanics
+
 #### Cards (`Cards/`)
 - **poker-cards.js** - Standard playing card deck
   - createPokerDeck(), createShuffledPokerDeck(), formatPokerCard()
@@ -71,6 +77,7 @@ All HTML files use `<script type="module">` with inline code that:
 - `Dice/basic.html` - Basic dice roller (uses dice-library + history-log)
 - `Dice/fate.html` - Fate/Fudge roller (uses fate.js + history-log)
 - `Dice/blades.html` - Blades in the Dark roller (uses blades.js + history-log)
+- `Dice/ancient-anchors.html` - Ancient Anchors roller (uses ancient-anchors.js + history-log)
 - `Dice/custom.html` - Custom dice roller with modifiers (uses rollDiceWithModifiers/rollWithAdvantage + history-log)
 
 **Card pages:**
@@ -167,13 +174,16 @@ Gaming/
 │   ├── basic.html              # Basic dice roller
 │   ├── fate.html               # Fate/Fudge roller
 │   ├── blades.html             # Blades in the Dark roller
+│   ├── ancient-anchors.html    # Ancient Anchors roller
 │   ├── custom.html             # Custom dice roller with modifiers
 │   ├── style.css               # Dice-specific styles (imports themes.css)
 │   ├── fate.js                 # Fate/Fudge dice (uses dice-library)
 │   ├── blades.js               # Blades in the Dark (uses dice-library)
+│   ├── ancient-anchors.js      # Ancient Anchors (uses dice-library)
 │   └── tests/                  # Dice module tests
 │       ├── fate.test.js
-│       └── blades.test.js
+│       ├── blades.test.js
+│       └── ancient-anchors.test.js
 ├── Cards/                      # Card game pages
 │   ├── index.html              # Cards landing page
 │   ├── deck.html               # Standard playing card deck
@@ -249,12 +259,12 @@ Gaming/
 ### Code Organization Improvements
 - **theme-setup.js** - Centralized theme selector code, eliminating duplication across HTML files
 - **themes.css** - All shared CSS consolidated (controls, history, modal, card display, etc.)
-- **15 themes** available: Autumn (default), Light, Grey, Dark, Black, Winter, Spring, Summer, Stars, Gothic, Cthulhu, Beach, Cyberpunk, Halloween, Crayon
+- **16 themes** available: Autumn (default), Light, Grey, Dark, Black, Winter, Spring, Summer, Stars, Gothic, Cthulhu, Beach, Cyberpunk, Halloween, Crayon, Ancient Anchors
 
 ### Test Coverage
-- **313 tests** passing across 11 test files
+- **338 tests** passing across 12 test files
 - All core modules have full test coverage
-- Tests cover: dice mechanics, card systems, Fate/Blades utilities, character sheet logic
+- Tests cover: dice mechanics, card systems, Fate/Blades/Ancient Anchors utilities, character sheet logic
 
 ## Notes
 
